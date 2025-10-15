@@ -1,3 +1,8 @@
+mkdir recipe-app
+cd recipe-app
+npm init -y
+npm install express mongoose cors body-parser
+
 
 // recipe-app/server.js
 const express = require("express");
@@ -9,16 +14,16 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ Connect to MongoDB Atlas
+//  Connect to MongoDB Atlas
 mongoose
   .connect("YOUR_MONGODB_ATLAS_CONNECTION_STRING", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("✅ MongoDB Connected"))
+  .then(() => console.log(" MongoDB Connected"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
-// ✅ Recipe Schema & Model
+// Recipe Schema & Model
 const RecipeSchema = new mongoose.Schema({
   title: String,
   ingredients: String,
@@ -26,20 +31,20 @@ const RecipeSchema = new mongoose.Schema({
 });
 const Recipe = mongoose.model("Recipe", RecipeSchema);
 
-// 🟢 CREATE
+// CREATE
 app.post("/api/recipes", async (req, res) => {
   const recipe = new Recipe(req.body);
   await recipe.save();
   res.json(recipe);
 });
 
-// 🔵 READ
+//  READ
 app.get("/api/recipes", async (req, res) => {
   const recipes = await Recipe.find();
   res.json(recipes);
 });
 
-// 🟠 UPDATE
+// UPDATE
 app.put("/api/recipes/:id", async (req, res) => {
   const updated = await Recipe.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -47,14 +52,14 @@ app.put("/api/recipes/:id", async (req, res) => {
   res.json(updated);
 });
 
-// 🔴 DELETE
+//  DELETE
 app.delete("/api/recipes/:id", async (req, res) => {
   await Recipe.findByIdAndDelete(req.params.id);
   res.json({ message: "Recipe deleted successfully" });
 });
 
-// ✅ Start Server
-app.listen(5000, () => console.log("🚀 Server running on port 5000"));
+//  Start Server
+app.listen(5000, () => console.log("Server running on port 5000"));
 
 cd recipe-app
 npx create-react-app recipe
@@ -71,14 +76,14 @@ function App() {
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
 
-  // 🟦 Fetch all recipes
+  //  Fetch all recipes
   useEffect(() => {
     axios.get("http://localhost:5000/api/recipes").then((res) => {
       setRecipes(res.data);
     });
   }, []);
 
-  // 🟩 Add new recipe
+  //  Add new recipe
   const addRecipe = () => {
     if (!title || !ingredients || !instructions) return;
     axios
@@ -95,7 +100,7 @@ function App() {
       });
   };
 
-  // 🟨 Update recipe
+  //  Update recipe
   const updateRecipe = (id) => {
     const newTitle = prompt("New Title:");
     const newIngredients = prompt("New Ingredients:");
@@ -113,7 +118,7 @@ function App() {
     }
   };
 
-  // 🟥 Delete recipe
+  // Delete recipe
   const deleteRecipe = (id) => {
     axios.delete(`http://localhost:5000/api/recipes/${id}`).then(() => {
       setRecipes(recipes.filter((r) => r._id !== id));
@@ -122,7 +127,7 @@ function App() {
 
   return (
     <div style={{ textAlign: "center", margin: "50px" }}>
-      <h2>🍲 Cooking Recipe Notes</h2>
+      <h2> Cooking Recipe Notes</h2>
 
       <input
         type="text"
@@ -161,8 +166,8 @@ function App() {
             <h3>{r.title}</h3>
             <p><strong>Ingredients:</strong> {r.ingredients}</p>
             <p><strong>Instructions:</strong> {r.instructions}</p>
-            <button onClick={() => updateRecipe(r._id)}>✏️ Edit</button>{" "}
-            <button onClick={() => deleteRecipe(r._id)}>❌ Delete</button>
+            <button onClick={() => updateRecipe(r._id)}> Edit</button>{" "}
+            <button onClick={() => deleteRecipe(r._id)}>Delete</button>
           </li>
         ))}
       </ul>
@@ -172,12 +177,9 @@ function App() {
 
 export default App;
 
-cd recipe-app
-npm init -y
-npm install express mongoose cors body-parser
+
 node server.js
 
-cd recipe-app/recipe
-npm start
+
 
 
